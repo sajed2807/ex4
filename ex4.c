@@ -1,3 +1,4 @@
+
 /******************
 * Name: Sajed Isa
 * ID: 325949089
@@ -6,6 +7,10 @@
 #include <stdio.h>
 
 #define MAX_GRID 20
+
+void clearBuffer() {
+    while (getchar() != '\n');
+}
 
 /* --- Task 1: Reverse Phrase --- */
 void doReverse() {
@@ -18,8 +23,8 @@ void doReverse() {
 
 void task1ReversePhrase() {
     printf("Please insert the phrase to reverse:\n");
-    // تنظيف المخزن المؤقت لقراءة الجملة بعد رقم الخيار
     scanf(" "); 
+    printf("The reversed phrase is: ");
     doReverse();
     printf("\n");
 }
@@ -39,78 +44,78 @@ int checkPal(char str[], int s, int e) {
 
 void task2CheckPalindrome() {
     int len;
-    printf("Please enter the length:\n");
+    printf("Please insert the phrase length:\n");
     scanf("%d", &len);
     char str[200];
-    printf("Please enter the characters:\n");
+    printf("Please insert the phrase to check:\n");
     fillArray(str, len, 0);
     if (checkPal(str, 0, len - 1))
-        printf("The phrase is a palindrome!!\n");
+        printf("The phrase is a palindrome.\n");
     else
-        printf("The phrase is not a palindrome!!\n");
+        printf("The phrase is not a palindrome.\n");
 }
 
 /* --- Task 3: Sentences --- */
-void generateSentences(char sub[][50], char vrb[][50], char obj[][50],
-                       int S, int V, int O, int i, int j, int k) {
-    if (i == S) return;
-    if (j == V) {
-        generateSentences(sub, vrb, obj, S, V, O, i + 1, 0, 0);
-        return;
-    }
-    if (k == O) {
-        generateSentences(sub, vrb, obj, S, V, O, i, j + 1, 0);
-        return;
-    }
-    printf("%s %s %s\n", sub[i], vrb[j], obj[k]);
-    generateSentences(sub, vrb, obj, S, V, O, i, j, k + 1);
-}
-
 void task3GenerateSentences() {
     int S, V, O;
-    // لا يوجد نص توضيحي هنا حسب لقطات الشاشة
-    if (scanf("%d %d %d", &S, &V, &O) != 3) return;
-    char s[20][50], v[20][50], o[20][50];
-    for (int i = 0; i < S; i++) scanf("%s", s[i]);
-    for (int i = 0; i < V; i++) scanf("%s", v[i]);
-    for (int i = 0; i < O; i++) scanf("%s", o[i]);
-    generateSentences(s, v, o, S, V, O, 0, 0, 0);
+    printf("Please insert number of subjects:\n");
+    scanf("%d", &S);
+    char subjects[20][50];
+    printf("Please insert the list of subjects:\n");
+    for (int i = 0; i < S; i++) {
+        printf("%d. ", i + 1);
+        scanf("%s", subjects[i]);
+    }
+
+    printf("Please insert number of verbs:\n");
+    scanf("%d", &V);
+    char verbs[20][50];
+    printf("Please insert the list of verbs:\n");
+    for (int i = 0; i < V; i++) {
+        printf("%d. ", i + 1);
+        scanf("%s", verbs[i]);
+    }
+
+    printf("Please insert number of objects:\n");
+    scanf("%d", &O);
+    char objects[20][50];
+    printf("Please insert the list of objects:\n");
+    for (int i = 0; i < O; i++) {
+        printf("%d. ", i + 1);
+        scanf("%s", objects[i]);
+    }
+
+    printf("List of Sentences:\n");
+    int count = 1;
+    for (int i = 0; i < S; i++) {
+        for (int j = 0; j < V; j++) {
+            for (int k = 0; k < O; k++) {
+                printf("%d. %s %s %s\n", count++, subjects[i], verbs[j], objects[k]);
+            }
+        }
+    }
 }
 
 /* --- Task 4: Zip Puzzle --- */
-char sol[MAX_GRID][MAX_GRID];
-
-void initSol(int r, int c, int i, int j) {
-    if (i == r) return;
-    sol[i][j] = '.';
-    if (j == c - 1) initSol(r, c, i + 1, 0);
-    else initSol(r, c, i, j + 1);
-}
+char zipSol[MAX_GRID][MAX_GRID];
 
 int solveZip(int g[MAX_GRID][MAX_GRID], int r, int c, int R, int C, int t) {
     if (t == R * C) {
-        sol[r][c] = 'X';
+        zipSol[r][c] = 'X';
         return 1;
     }
     int val = t + 1;
-    // الترتيب: أسفل، أعلى، يمين، يسار
-    if (r + 1 < R && g[r + 1][c] == val) {
-        sol[r][c] = 'D';
-        if (solveZip(g, r + 1, c, R, C, val)) return 1;
+    int dr[] = {1, -1, 0, 0};
+    int dc[] = {0, 0, 1, -1};
+    char move[] = {'D', 'U', 'R', 'L'};
+
+    for (int i = 0; i < 4; i++) {
+        int nr = r + dr[i], nc = c + dc[i];
+        if (nr >= 0 && nr < R && nc >= 0 && nc < C && g[nr][nc] == val) {
+            zipSol[r][c] = move[i];
+            if (solveZip(g, nr, nc, R, C, val)) return 1;
+        }
     }
-    if (r - 1 >= 0 && g[r - 1][c] == val) {
-        sol[r][c] = 'U';
-        if (solveZip(g, r - 1, c, R, C, val)) return 1;
-    }
-    if (c + 1 < C && g[r][c + 1] == val) {
-        sol[r][c] = 'R';
-        if (solveZip(g, r, c + 1, R, C, val)) return 1;
-    }
-    if (c - 1 >= 0 && g[r][c - 1] == val) {
-        sol[r][c] = 'L';
-        if (solveZip(g, r, c - 1, R, C, val)) return 1;
-    }
-    sol[r][c] = '.';
     return 0;
 }
 
@@ -123,42 +128,45 @@ void task4ZipPuzzle() {
     for (int i = 0; i < R; i++)
         for (int j = 0; j < C; j++)
             scanf("%d", &grid[i][j]);
-    initSol(R, C, 0, 0);
+
     if (solveZip(grid, 0, 0, R, C, 1)) {
+        printf("Solution:\n");
         for (int i = 0; i < R; i++) {
             for (int j = 0; j < C; j++) {
-                printf("%c%s", sol[i][j], (j == C - 1 ? "" : " "));
+                printf("%c%s", zipSol[i][j], (j == C - 1 ? "" : " "));
             }
             printf("\n");
         }
-    } else printf("Failure!!\n");
+    } else printf("No solution exists.\n");
 }
 
 /* --- Task 5: Sudoku --- */
-int canPlace(int b[9][9], int r, int c, int n, int i) {
-    if (i == 9) return 1;
-    if (b[r][i] == n || b[i][c] == n) return 0;
-    int sr = (r / 3) * 3, sc = (c / 3) * 3;
-    if (b[sr + (i / 3)][sc + (i % 3)] == n) return 0;
-    return canPlace(b, r, c, n, i + 1);
-}
-
-int runSudoku(int b[9][9], int r, int c);
-
-int tryNumbers(int b[9][9], int r, int c, int n) {
-    if (n > 9) return 0;
-    if (canPlace(b, r, c, n, 0)) {
-        b[r][c] = n;
-        if (runSudoku(b, (c == 8 ? r + 1 : r), (c + 1) % 9)) return 1;
-        b[r][c] = 0;
+int canPlace(int b[9][9], int r, int c, int n) {
+    for (int i = 0; i < 9; i++) {
+        if (b[r][i] == n || b[i][c] == n) return 0;
     }
-    return tryNumbers(b, r, c, n + 1);
+    int sr = (r / 3) * 3, sc = (c / 3) * 3;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (b[sr + i][sc + j] == n) return 0;
+        }
+    }
+    return 1;
 }
 
-int runSudoku(int b[9][9], int r, int c) {
+int solveSudoku(int b[9][9], int r, int c) {
     if (r == 9) return 1;
-    if (b[r][c] != 0) return runSudoku(b, (c == 8 ? r + 1 : r), (c + 1) % 9);
-    return tryNumbers(b, r, c, 1);
+    if (c == 9) return solveSudoku(b, r + 1, 0);
+    if (b[r][c] != 0) return solveSudoku(b, r, c + 1);
+
+    for (int n = 1; n <= 9; n++) {
+        if (canPlace(b, r, c, n)) {
+            b[r][c] = n;
+            if (solveSudoku(b, r, c + 1)) return 1;
+            b[r][c] = 0;
+        }
+    }
+    return 0;
 }
 
 void task5Sudoku() {
@@ -167,22 +175,30 @@ void task5Sudoku() {
     for (int i = 0; i < 9; i++)
         for (int j = 0; j < 9; j++)
             scanf("%d", &board[i][j]);
-    if (runSudoku(board, 0, 0)) {
+
+    if (solveSudoku(board, 0, 0)) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 printf("%d%s", board[i][j], (j == 8 ? "" : " "));
             }
             printf("\n");
         }
-    } else printf("No solution!!\n");
+    } else printf("No solution exists.\n");
 }
 
 /* --- MAIN --- */
 int main() {
     int option;
     while (1) {
-        printf("Choose an option:\n");
-        if (scanf("%d", &option) != 1 || option <= 0) break;
+        printf("Please choose a task (1-5) or 6 to exit:\n");
+        if (scanf("%d", &option) != 1) {
+            clearBuffer();
+            continue;
+        }
+        if (option == 6) {
+            printf("Goodbye!\n");
+            break;
+        }
         switch (option) {
             case 1: task1ReversePhrase(); break;
             case 2: task2CheckPalindrome(); break;
@@ -194,5 +210,4 @@ int main() {
     }
     return 0;
 }
-
 
