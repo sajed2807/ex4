@@ -4,11 +4,10 @@
 ******************/
 
 #include <stdio.h>
-#include <string.h>
 
 #define MAX_GRID 20
 
-/* =================== TASK 1: Reverse Phrase =================== */
+/* --- Task 1: Reverse Phrase --- */
 void doReverse() {
     char c;
     if (scanf("%c", &c) == 1 && c != '\n') {
@@ -19,12 +18,13 @@ void doReverse() {
 
 void task1ReversePhrase() {
     printf("Please insert the phrase to reverse:\n");
-    scanf(" "); // تنظيف الـ buffer لقراءة الجملة بشكل صحيح
+    // تنظيف المخزن المؤقت لقراءة الجملة بعد رقم الخيار
+    scanf(" "); 
     doReverse();
     printf("\n");
 }
 
-/* =================== TASK 2: Palindrome =================== */
+/* --- Task 2: Palindrome --- */
 void fillArray(char arr[], int n, int i) {
     if (i == n) return;
     scanf(" %c", &arr[i]);
@@ -50,7 +50,7 @@ void task2CheckPalindrome() {
         printf("The phrase is not a palindrome!!\n");
 }
 
-/* =================== TASK 3: Sentences =================== */
+/* --- Task 3: Sentences --- */
 void generateSentences(char sub[][50], char vrb[][50], char obj[][50],
                        int S, int V, int O, int i, int j, int k) {
     if (i == S) return;
@@ -68,15 +68,16 @@ void generateSentences(char sub[][50], char vrb[][50], char obj[][50],
 
 void task3GenerateSentences() {
     int S, V, O;
-    scanf("%d %d %d", &S, &V, &O);
+    // لا يوجد نص توضيحي هنا حسب لقطات الشاشة
+    if (scanf("%d %d %d", &S, &V, &O) != 3) return;
     char s[20][50], v[20][50], o[20][50];
-    for (int i = 0; i < S; i++) scanf(" %s", s[i]);
-    for (int i = 0; i < V; i++) scanf(" %s", v[i]);
-    for (int i = 0; i < O; i++) scanf(" %s", o[i]);
+    for (int i = 0; i < S; i++) scanf("%s", s[i]);
+    for (int i = 0; i < V; i++) scanf("%s", v[i]);
+    for (int i = 0; i < O; i++) scanf("%s", o[i]);
     generateSentences(s, v, o, S, V, O, 0, 0, 0);
 }
 
-/* =================== TASK 4: Zip Puzzle =================== */
+/* --- Task 4: Zip Puzzle --- */
 char sol[MAX_GRID][MAX_GRID];
 
 void initSol(int r, int c, int i, int j) {
@@ -92,7 +93,7 @@ int solveZip(int g[MAX_GRID][MAX_GRID], int r, int c, int R, int C, int t) {
         return 1;
     }
     int val = t + 1;
-    // ترتيب الاتجاهات: Down, Up, Right, Left
+    // الترتيب: أسفل، أعلى، يمين، يسار
     if (r + 1 < R && g[r + 1][c] == val) {
         sol[r][c] = 'D';
         if (solveZip(g, r + 1, c, R, C, val)) return 1;
@@ -125,13 +126,15 @@ void task4ZipPuzzle() {
     initSol(R, C, 0, 0);
     if (solveZip(grid, 0, 0, R, C, 1)) {
         for (int i = 0; i < R; i++) {
-            for (int j = 0; j < C; j++) printf("%c ", sol[i][j]);
+            for (int j = 0; j < C; j++) {
+                printf("%c%s", sol[i][j], (j == C - 1 ? "" : " "));
+            }
             printf("\n");
         }
     } else printf("Failure!!\n");
 }
 
-/* =================== TASK 5: Sudoku =================== */
+/* --- Task 5: Sudoku --- */
 int canPlace(int b[9][9], int r, int c, int n, int i) {
     if (i == 9) return 1;
     if (b[r][i] == n || b[i][c] == n) return 0;
@@ -166,25 +169,27 @@ void task5Sudoku() {
             scanf("%d", &board[i][j]);
     if (runSudoku(board, 0, 0)) {
         for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) printf("%d ", board[i][j]);
+            for (int j = 0; j < 9; j++) {
+                printf("%d%s", board[i][j], (j == 8 ? "" : " "));
+            }
             printf("\n");
         }
     } else printf("No solution!!\n");
 }
 
-/* =================== MAIN =================== */
+/* --- MAIN --- */
 int main() {
     int option;
     while (1) {
         printf("Choose an option:\n");
-        if (scanf("%d", &option) != 1 || option == 0) break;
+        if (scanf("%d", &option) != 1 || option <= 0) break;
         switch (option) {
             case 1: task1ReversePhrase(); break;
             case 2: task2CheckPalindrome(); break;
             case 3: task3GenerateSentences(); break;
             case 4: task4ZipPuzzle(); break;
             case 5: task5Sudoku(); break;
-            default: printf("Invalid option\n"); break;
+            default: break; 
         }
     }
     return 0;
